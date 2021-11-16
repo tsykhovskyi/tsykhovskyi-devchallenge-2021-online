@@ -28,6 +28,23 @@ export class Landing implements LandingInterface {
     return this.intervals.reduce((square, interval) => square + (interval.end - interval.start) * interval.height, 0);
   }
 
+  intervalSquare(start: number, end: number): number {
+    let square = 0;
+    for (const interval of this.intervals) {
+      if (start >= interval.end) {
+        continue;
+      }
+
+      if (end <= interval.start) {
+        break;
+      }
+
+      square += (Math.min(interval.end, end) - Math.max(start, interval.start)) * interval.height;
+    }
+
+    return square;
+  }
+
   overwrite(patchLanding: LandingInterface): LandingInterface {
     let replaceStart = null;
     let replaceEnd = null;

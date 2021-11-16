@@ -52,6 +52,11 @@ export interface LandingInterface {
   square: number;
 
   /**
+   * Calculates square under provided interval
+   */
+  intervalSquare(start: number, end: number): number
+
+  /**
    * Extract landing for defined start and end.
    */
   slice(start: number, end: number): LandingInterface;
