@@ -1,5 +1,5 @@
 import { Response } from 'express';
-import { FigurePositionInterface } from '../box/models';
+import { Command } from '../plotter/models';
 
 export function errorResponse(res: Response, err: Error) {
   res.statusCode = 422;
@@ -9,11 +9,11 @@ export function errorResponse(res: Response, err: Error) {
   });
 }
 
-export function successResponse(res: Response, result: FigurePositionInterface[]) {
+export function successResponse(res: Response, amount: number, program: Command[]) {
   res.statusCode = 200;
   res.send({
     success: true,
-    amount: result.length,
-    data: result,
+    amount,
+    program,
   });
 }

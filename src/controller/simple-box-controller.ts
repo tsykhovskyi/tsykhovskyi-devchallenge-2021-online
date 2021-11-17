@@ -2,11 +2,15 @@ import { Request, Response } from 'express';
 import { SimpleBoxRequest, SimpleBoxRequestValidator } from './simple-box-request';
 import { errorResponse, successResponse } from './response';
 import { FieldFigureDistributor } from '../box/fieldFigureDistributor';
+import { Renderer } from '../plotter/renderer';
 
 export class SimpleBoxController {
   private validator: SimpleBoxRequestValidator;
+  private renderer: Renderer;
+
   constructor() {
     this.validator = new SimpleBoxRequestValidator();
+    this.renderer = new Renderer();
   }
 
   index(req: Request, res: Response) {
@@ -19,11 +23,15 @@ export class SimpleBoxController {
       return errorResponse(res, err as Error)
     }
 
-    const boxes = (new FieldFigureDistributor()).fillBoxes(request.boxSize, request.sheetSize);
+    const distributor = new FieldFigureDistributor();
+    const boxes = distributor.fillBoxes(request.boxSize, request.sheetSize);
     if (boxes.length === 0) {
       errorResponse(res, new Error('Invalid sheet size. Too small for producing at least one box'));
     }
 
-    successResponse(res, boxes);
+
+    const commands = this.renderer.render(boxes);
+
+    successResponse(res, boxes.length, commands);
   }
 }
