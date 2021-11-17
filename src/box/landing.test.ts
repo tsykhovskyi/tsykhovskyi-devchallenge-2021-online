@@ -2,7 +2,7 @@ import { Landing } from "./landing";
 import { FigureInterface } from "./models";
 
 describe("Landing", () => {
-  describe("Initial properties", function () {
+  describe("Initial properties", () => {
     const landing = new Landing([
       { start: 100, end: 150, height: 20 },
       { start: 150, end: 200, height: 50 },
@@ -10,7 +10,7 @@ describe("Landing", () => {
       { start: 250, end: 300, height: 5 },
     ]);
 
-    it("should have valid properties", function () {
+    it("should have valid properties", () => {
       expect(landing.start).toEqual(100);
       expect(landing.end).toEqual(300);
       expect(landing.lowestHeight).toEqual(5);
@@ -26,7 +26,7 @@ describe("Landing", () => {
       { start: 300, end: 400, height: 40 },
     ]);
 
-    it("should create valid slice", function () {
+    it("should create valid slice", () => {
       const slice = landing.slice(50, 150);
 
       expect(slice.intervals).toEqual([
@@ -35,7 +35,7 @@ describe("Landing", () => {
       ]);
     });
 
-    it("should overwrite intervals", function () {
+    it("should overwrite intervals", () => {
       const patchLanding = new Landing([
         { start: 50, end: 150, height: 100 },
         { start: 150, end: 200, height: 0 },
@@ -53,7 +53,7 @@ describe("Landing", () => {
       ]);
     });
 
-    it("should calculate interval square", function () {
+    it("should calculate interval square", () => {
       expect(landing.intervalSquare(0, 100)).toEqual(1000);
       expect(landing.intervalSquare(0, 150)).toEqual(2000);
       expect(landing.intervalSquare(350, 999)).toEqual(2000);
@@ -63,7 +63,7 @@ describe("Landing", () => {
       expect(landing.intervalSquare(150, 99)).toEqual(0);
     });
 
-    it("should shift landing", function () {
+    it("should shift landing", () => {
       expect(landing.shift(100, 1).intervals).toEqual([
         { start: 100, end: 200, height: 11 },
         { start: 200, end: 300, height: 21 },
@@ -98,7 +98,7 @@ describe("Landing", () => {
         { start: start + 2, end: start + 3, height: 1 },
       ]);
 
-    it("should fit figure", function () {
+    it("should fit figure", () => {
       for (const [position, expectedHeight] of [
         [0, 4],
         [1, 3],

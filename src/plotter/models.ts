@@ -31,3 +31,8 @@ export interface Coordinates {
   x: number;
   y: number;
 }
+
+export interface PlotterInterface {
+  line(from: Coordinates, to: Coordinates): PlotterInterface;
+  finish(): Command[];
+}

@@ -3,12 +3,13 @@ import {
   Coordinates,
   DownCommand,
   GoToCommand,
+  PlotterInterface,
   StartCommand,
   StopCommand,
   UpCommand,
 } from "./models";
 
-export class Plotter {
+export class Plotter implements PlotterInterface {
   private cutterPosition: Coordinates;
   private commands: Command[] = [];
 
@@ -20,7 +21,7 @@ export class Plotter {
     this.start();
   }
 
-  line(from: Coordinates, to: Coordinates) {
+  line(from: Coordinates, to: Coordinates): Plotter {
     if (this.coordinatesMatch(this.cutterPosition, from)) {
       this.activateCutter();
       this.goTo(to);
@@ -33,6 +34,8 @@ export class Plotter {
       this.activateCutter();
       this.goTo(to);
     }
+
+    return this;
   }
 
   finish(): Command[] {
