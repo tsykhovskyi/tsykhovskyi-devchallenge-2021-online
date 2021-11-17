@@ -1,5 +1,6 @@
-import { BoxSize, Direction, FigureInterface, LandingInterface } from './models';
+import { BoxSize, Direction, FigureInterface, LandingInterface, Line, Point } from './models';
 import { Landing } from './landing';
+import { Circuit } from './circuit';
 
 export class CrossFigure implements FigureInterface {
   public readonly width: number;
@@ -154,6 +155,85 @@ export class CrossFigure implements FigureInterface {
 
     throw new Error('Runtime error');
   }
+
+  circuit(position: Point = {x: 0, y: 0}): Line[] {
+    const {height, width, depth} = this.size;
+
+    if (this.direction === Direction.Left) {
+      const circuit = new Circuit({x: position.x, y: position.y + height});
+      return circuit.up(depth)
+        .right(height)
+        .up(height)
+        .right(width)
+        .down(height)
+        .right(height + width)
+        .down(depth)
+        .left(width + height)
+        .down(height)
+        .left(width)
+        .up(height)
+        .left(height)
+        .validate()
+        .circuitLines();
+    }
+
+    if (this.direction === Direction.Down) {
+      const circuit = new Circuit({x: position.x, y: position.y + height});
+      return circuit.up(width)
+        .right(height)
+        .up(height + width)
+        .right(depth)
+        .down(width + height)
+        .right(height)
+        .down(width)
+        .left(height)
+        .down(height)
+        .left(depth)
+        .up(height)
+        .left(height)
+        .validate()
+        .circuitLines();
+    }
+
+    if (this.direction === Direction.Right) {
+      const circuit = new Circuit({x: position.x, y: position.y + height});
+      return circuit.up(depth)
+        .right(width + height)
+        .up(height)
+        .right(width)
+        .down(height)
+        .right(height)
+        .down(depth)
+        .left(height)
+        .down(height)
+        .left(width)
+        .up(height)
+        .left(height + width)
+        .validate()
+        .circuitLines();
+    }
+
+    if (this.direction === Direction.Up) {
+      const circuit = new Circuit({x: position.x, y: position.y + width + height});
+      return  circuit.up(width)
+        .right(height)
+        .up(height)
+        .right(depth)
+        .down(height)
+        .right(height)
+        .down(width)
+        .left(height)
+        .down(height + width)
+        .left(depth)
+        .up(width + height)
+        .left(height)
+        .validate()
+        .circuitLines();
+    }
+
+    throw new Error('Runtime error');
+  }
+
 
   private createBlockLanding(p0: number, p1: number, p2: number, p3: number, depth: number): LandingInterface {
     return new Landing([

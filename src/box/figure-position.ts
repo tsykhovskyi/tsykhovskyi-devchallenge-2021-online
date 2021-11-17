@@ -1,4 +1,4 @@
-import { FigureInterface, Point, FigurePositionInterface, LandingInterface } from './models';
+import { FigureInterface, Point, FigurePositionInterface, LandingInterface, Line } from './models';
 
 export class FigurePosition implements FigurePositionInterface {
   constructor(public readonly figure: FigureInterface, public readonly offsetPoint: Point) {
@@ -19,5 +19,9 @@ export class FigurePosition implements FigurePositionInterface {
     const figure = this.figure.switchProjection();
 
     return new FigurePosition(figure, offsetPoint);
+  }
+
+  circuit(): Line[] {
+    return this.figure.circuit(this.offsetPoint);
   }
 }

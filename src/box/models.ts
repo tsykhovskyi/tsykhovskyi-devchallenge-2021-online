@@ -23,6 +23,11 @@ export interface Point {
   y: number;
 }
 
+export interface Line {
+  from: Point;
+  to: Point;
+}
+
 export type Axis = 'x' | 'y';
 
 export interface FigureInterface {
@@ -34,6 +39,7 @@ export interface FigureInterface {
   bottomShapeLandingOptions(): LandingInterface[];
   topShapeLanding(): LandingInterface;
   switchProjection(): FigureInterface;
+  circuit(position: Point): Line[];
 }
 
 export interface FigurePositionInterface {
@@ -43,6 +49,7 @@ export interface FigurePositionInterface {
   readonly top: number;
   topShapeLanding(): LandingInterface;
   switchProjection(): FigurePositionInterface;
+  circuit(): Line[];
 }
 
 export interface LandingInterface {

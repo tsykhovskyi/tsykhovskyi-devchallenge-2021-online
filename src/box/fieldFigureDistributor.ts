@@ -11,7 +11,7 @@ import { CrossFigure } from './cross-figure';
 import { Field } from './field';
 
 
-export class Renderer {
+export class FieldFigureDistributor {
   fillBoxes(boxSize: BoxSize, sheetSize: SheetSize): FigurePositionInterface[] {
     const dt = Date.now();
     let counter = 0;

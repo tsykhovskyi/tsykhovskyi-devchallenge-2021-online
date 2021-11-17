@@ -1,7 +1,7 @@
 import { Request, Response } from 'express';
 import { SimpleBoxRequest, SimpleBoxRequestValidator } from './simple-box-request';
 import { errorResponse, successResponse } from './response';
-import { Renderer } from '../box/renderer';
+import { FieldFigureDistributor } from '../box/fieldFigureDistributor';
 
 export class SimpleBoxController {
   private validator: SimpleBoxRequestValidator;
@@ -19,7 +19,7 @@ export class SimpleBoxController {
       return errorResponse(res, err as Error)
     }
 
-    const boxes = (new Renderer()).fillBoxes(request.boxSize, request.sheetSize);
+    const boxes = (new FieldFigureDistributor()).fillBoxes(request.boxSize, request.sheetSize);
     if (boxes.length === 0) {
       errorResponse(res, new Error('Invalid sheet size. Too small for producing at least one box'));
     }
