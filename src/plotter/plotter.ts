@@ -1,15 +1,26 @@
-import { Command, Coordinates, DownCommand, GoToCommand, StartCommand, StopCommand, UpCommand } from './models';
+import {
+  Command,
+  Coordinates,
+  DownCommand,
+  GoToCommand,
+  StartCommand,
+  StopCommand,
+  UpCommand,
+} from "./models";
 
 export class Plotter {
   private cutterPosition: Coordinates;
   private commands: Command[] = [];
 
-  constructor(initCoordinates: Coordinates = {x: 0, y: 0}, private cutterIsActive = false) {
+  constructor(
+    initCoordinates: Coordinates = { x: 0, y: 0 },
+    private cutterIsActive = false
+  ) {
     this.cutterPosition = initCoordinates;
-    this.start()
+    this.start();
   }
 
-  line(from : Coordinates, to: Coordinates) {
+  line(from: Coordinates, to: Coordinates) {
     if (this.coordinatesMatch(this.cutterPosition, from)) {
       this.activateCutter();
       this.goTo(to);
@@ -45,28 +56,28 @@ export class Plotter {
   }
 
   private start() {
-    const cmd: StartCommand = {command: 'START'};
+    const cmd: StartCommand = { command: "START" };
     this.addCommand(cmd);
   }
 
   private stop() {
-    const cmd: StopCommand = {command: 'STOP'};
+    const cmd: StopCommand = { command: "STOP" };
     this.addCommand(cmd);
   }
 
   goTo(to: Coordinates) {
-    const cmd: GoToCommand = {command: 'GOTO', x: to.x, y: to.y};
+    const cmd: GoToCommand = { command: "GOTO", x: to.x, y: to.y };
     this.addCommand(cmd);
     this.cutterPosition = to;
   }
 
   private up() {
-    const cmd: UpCommand = {command: 'UP'};
+    const cmd: UpCommand = { command: "UP" };
     this.addCommand(cmd);
   }
 
   private down() {
-    const cmd: DownCommand = {command: 'DOWN'};
+    const cmd: DownCommand = { command: "DOWN" };
     this.addCommand(cmd);
   }
 

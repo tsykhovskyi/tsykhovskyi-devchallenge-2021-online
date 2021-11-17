@@ -1,7 +1,12 @@
-import { BoxSize, Direction, FigureInterface, FigurePositionInterface, SheetSize } from './models';
-import { CrossFigure } from './cross-figure';
-import { Field } from './field';
-
+import {
+  BoxSize,
+  Direction,
+  FigureInterface,
+  FigurePositionInterface,
+  SheetSize,
+} from "./models";
+import { CrossFigure } from "./cross-figure";
+import { Field } from "./field";
 
 export class FieldFigureDistributor {
   fillBoxes(boxSize: BoxSize, sheetSize: SheetSize): FigurePositionInterface[] {
@@ -35,7 +40,10 @@ export class FieldFigureDistributor {
   /**
    * Creates 2 figures sets with vertical order
    */
-  private createFigureSets(boxSize: BoxSize, sheetSize: SheetSize): FigureInterface[][] {
+  private createFigureSets(
+    boxSize: BoxSize,
+    sheetSize: SheetSize
+  ): FigureInterface[][] {
     const horizontalPrioritySet = [
       new CrossFigure(Direction.Left, boxSize),
       new CrossFigure(Direction.Down, boxSize),
@@ -65,6 +73,6 @@ export class FieldFigureDistributor {
       height: sizes[0],
       width: sizes[1],
       depth: sizes[2],
-    }
+    };
   }
 }

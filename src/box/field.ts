@@ -1,15 +1,21 @@
-import { FieldInterface, FigureInterface, FigurePositionInterface, LandingInterface } from './models';
-import { Landing } from './landing';
+import {
+  FieldInterface,
+  FigureInterface,
+  FigurePositionInterface,
+  LandingInterface,
+} from "./models";
+import { Landing } from "./landing";
 
 interface PositionScore {
-  position: FigurePositionInterface,
-  square: number
+  position: FigurePositionInterface;
+  square: number;
 }
 
 export class Field implements FieldInterface {
-
-  constructor(private xLanding: LandingInterface, private yLanding: LandingInterface) {
-  }
+  constructor(
+    private xLanding: LandingInterface,
+    private yLanding: LandingInterface
+  ) {}
 
   static createEmpty(width: number, length: number): FieldInterface {
     const xLanding = Landing.create(width);
@@ -30,8 +36,8 @@ export class Field implements FieldInterface {
 
         positionsScores.push({
           position: xPosition,
-          square: this.xPositionFieldSquare(xPosition)
-        })
+          square: this.xPositionFieldSquare(xPosition),
+        });
       }
 
       const yPositions = this.yLanding.potentialLandingPositions(figure);
@@ -44,32 +50,44 @@ export class Field implements FieldInterface {
 
         positionsScores.push({
           position: xPosition,
-          square: this.xPositionFieldSquare(xPosition)
-        })
+          square: this.xPositionFieldSquare(xPosition),
+        });
       }
     }
 
-    positionsScores.sort(({square: s1}, {square: s2}) => s1 - s2);
+    positionsScores.sort(({ square: s1 }, { square: s2 }) => s1 - s2);
 
-    const figurePositionScore = positionsScores.shift()
+    const figurePositionScore = positionsScores.shift();
 
-    return figurePositionScore !== undefined ? figurePositionScore.position : null;
+    return figurePositionScore !== undefined
+      ? figurePositionScore.position
+      : null;
   }
 
   applyFigurePosition(figurePosition: FigurePositionInterface): FieldInterface {
     const xLanding = this.xLanding.overwrite(figurePosition.topShapeLanding());
-    const yLanding = this.yLanding.overwrite(figurePosition.switchProjection().topShapeLanding());
+    const yLanding = this.yLanding.overwrite(
+      figurePosition.switchProjection().topShapeLanding()
+    );
 
     return new Field(xLanding, yLanding);
   }
 
-  private xPositionFieldSquare(figurePosition: FigurePositionInterface): number {
+  private xPositionFieldSquare(
+    figurePosition: FigurePositionInterface
+  ): number {
     const xFigureSquare = figurePosition.topShapeLanding().square;
-    const xLandingSquare = this.xLanding.intervalSquare(figurePosition.offsetPoint.x, figurePosition.offsetPoint.x + figurePosition.figure.width);
+    const xLandingSquare = this.xLanding.intervalSquare(
+      figurePosition.offsetPoint.x,
+      figurePosition.offsetPoint.x + figurePosition.figure.width
+    );
     const yPosition = figurePosition.switchProjection();
     const yFigureSquare = yPosition.topShapeLanding().square;
-    const yLandingSquare = this.yLanding.intervalSquare(yPosition.offsetPoint.x, yPosition.offsetPoint.x + yPosition.figure.width);
+    const yLandingSquare = this.yLanding.intervalSquare(
+      yPosition.offsetPoint.x,
+      yPosition.offsetPoint.x + yPosition.figure.width
+    );
 
-    return (xFigureSquare - xLandingSquare) + (yFigureSquare - yLandingSquare);
+    return xFigureSquare - xLandingSquare + (yFigureSquare - yLandingSquare);
   }
 }

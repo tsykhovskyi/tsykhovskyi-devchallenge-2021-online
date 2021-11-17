@@ -1,12 +1,22 @@
-import { BoxSize, Direction, FigureInterface, LandingInterface, Line, Point } from './models';
-import { Landing } from './landing';
-import { Circuit } from './circuit';
+import {
+  BoxSize,
+  Direction,
+  FigureInterface,
+  LandingInterface,
+  Line,
+  Point,
+} from "./models";
+import { Landing } from "./landing";
+import { Circuit } from "./circuit";
 
 export class CrossFigure implements FigureInterface {
   public readonly width: number;
   public readonly height: number;
 
-  constructor(public readonly direction: Direction, public readonly size: BoxSize) {
+  constructor(
+    public readonly direction: Direction,
+    public readonly size: BoxSize
+  ) {
     this.width = 2 * (size.height + size.width);
     this.height = 2 * size.height + size.depth;
 
@@ -24,44 +34,36 @@ export class CrossFigure implements FigureInterface {
     let p3 = null;
     let depth = null;
 
-    if (
-      this.direction === Direction.Left
-    ) {
+    if (this.direction === Direction.Left) {
       p1 = this.size.height;
       p2 = p1 + this.size.width;
       p3 = p2 + this.size.height + this.size.width;
       depth = this.size.height;
     }
 
-    if (
-      this.direction === Direction.Down
-    ) {
+    if (this.direction === Direction.Down) {
       p1 = this.size.height;
       p2 = p1 + this.size.depth;
       p3 = p2 + this.size.height;
-      depth = this.size.height
+      depth = this.size.height;
     }
 
-    if (
-      this.direction === Direction.Right
-    ) {
+    if (this.direction === Direction.Right) {
       p1 = this.size.height + this.size.width;
       p2 = p1 + this.size.width;
       p3 = p2 + this.size.height;
       depth = this.size.height;
     }
 
-    if (
-      this.direction === Direction.Up
-    ) {
+    if (this.direction === Direction.Up) {
       p1 = this.size.height;
       p2 = p1 + this.size.depth;
       p3 = p2 + this.size.height;
-      depth = this.size.height + this.size.width
+      depth = this.size.height + this.size.width;
     }
 
     if (p1 === null || p2 === null || p3 === null || depth === null) {
-      throw new Error('Runtime error');
+      throw new Error("Runtime error");
     }
 
     return [
@@ -78,67 +80,63 @@ export class CrossFigure implements FigureInterface {
     let p3 = null;
     let level = null;
 
-    if (
-      this.direction === Direction.Left
-    ) {
+    if (this.direction === Direction.Left) {
       p1 = this.size.height;
       p2 = p1 + this.size.width;
       p3 = p2 + this.size.height + this.size.width;
       level = this.size.height + this.size.depth;
 
       return new Landing([
-        {start: 0, end: p1, height: level},
-        {start: p1, end: p2, height: level + this.size.height},
-        {start: p2, end: p3, height: level},
+        { start: 0, end: p1, height: level },
+        { start: p1, end: p2, height: level + this.size.height },
+        { start: p2, end: p3, height: level },
       ]);
     }
 
-    if (
-      this.direction === Direction.Down
-    ) {
+    if (this.direction === Direction.Down) {
       p1 = this.size.height;
       p2 = p1 + this.size.depth;
       p3 = p2 + this.size.height;
       level = this.size.height + this.size.width;
 
       return new Landing([
-        {start: 0, end: p1, height: level},
-        {start: p1, end: p2, height: level + this.size.height + this.size.width},
-        {start: p2, end: p3, height: level},
+        { start: 0, end: p1, height: level },
+        {
+          start: p1,
+          end: p2,
+          height: level + this.size.height + this.size.width,
+        },
+        { start: p2, end: p3, height: level },
       ]);
     }
 
-    if (
-      this.direction === Direction.Right
-    ) {
+    if (this.direction === Direction.Right) {
       p1 = this.size.height + this.size.width;
       p2 = p1 + this.size.width;
       p3 = p2 + this.size.height;
       level = this.size.height + this.size.depth;
 
       return new Landing([
-        {start: 0, end: p1, height: level},
-        {start: p1, end: p2, height: level + this.size.height},
-        {start: p2, end: p3, height: level},
+        { start: 0, end: p1, height: level },
+        { start: p1, end: p2, height: level + this.size.height },
+        { start: p2, end: p3, height: level },
       ]);
     }
 
-    if (
-      this.direction === Direction.Up
-    ) {
+    if (this.direction === Direction.Up) {
       p1 = this.size.height;
       p2 = p1 + this.size.depth;
       p3 = p2 + this.size.height;
       level = this.size.height + 2 * this.size.width;
 
       return new Landing([
-        {start: 0, end: p1, height: level},
-        {start: p1, end: p2, height: level + this.size.height},
-        {start: p2, end: p3, height: level},
+        { start: 0, end: p1, height: level },
+        { start: p1, end: p2, height: level + this.size.height },
+        { start: p2, end: p3, height: level },
       ]);
     }
 
-    throw new Error('Runtime error');
+    throw new Error("Runtime error");
   }
 
   switchProjection(): FigureInterface {
@@ -153,15 +151,16 @@ export class CrossFigure implements FigureInterface {
         return new CrossFigure(Direction.Right, this.size);
     }
 
-    throw new Error('Runtime error');
+    throw new Error("Runtime error");
   }
 
-  circuit(position: Point = {x: 0, y: 0}): Line[] {
-    const {height, width, depth} = this.size;
+  circuit(position: Point = { x: 0, y: 0 }): Line[] {
+    const { height, width, depth } = this.size;
 
     if (this.direction === Direction.Left) {
-      const circuit = new Circuit({x: position.x, y: position.y + height});
-      return circuit.up(depth)
+      const circuit = new Circuit({ x: position.x, y: position.y + height });
+      return circuit
+        .up(depth)
         .right(height)
         .up(height)
         .right(width)
@@ -178,8 +177,9 @@ export class CrossFigure implements FigureInterface {
     }
 
     if (this.direction === Direction.Down) {
-      const circuit = new Circuit({x: position.x, y: position.y + height});
-      return circuit.up(width)
+      const circuit = new Circuit({ x: position.x, y: position.y + height });
+      return circuit
+        .up(width)
         .right(height)
         .up(height + width)
         .right(depth)
@@ -196,8 +196,9 @@ export class CrossFigure implements FigureInterface {
     }
 
     if (this.direction === Direction.Right) {
-      const circuit = new Circuit({x: position.x, y: position.y + height});
-      return circuit.up(depth)
+      const circuit = new Circuit({ x: position.x, y: position.y + height });
+      return circuit
+        .up(depth)
         .right(width + height)
         .up(height)
         .right(width)
@@ -214,8 +215,12 @@ export class CrossFigure implements FigureInterface {
     }
 
     if (this.direction === Direction.Up) {
-      const circuit = new Circuit({x: position.x, y: position.y + width + height});
-      return  circuit.up(width)
+      const circuit = new Circuit({
+        x: position.x,
+        y: position.y + width + height,
+      });
+      return circuit
+        .up(width)
         .right(height)
         .up(height)
         .right(depth)
@@ -231,15 +236,20 @@ export class CrossFigure implements FigureInterface {
         .circuitLines();
     }
 
-    throw new Error('Runtime error');
+    throw new Error("Runtime error");
   }
 
-
-  private createBlockLanding(p0: number, p1: number, p2: number, p3: number, depth: number): LandingInterface {
+  private createBlockLanding(
+    p0: number,
+    p1: number,
+    p2: number,
+    p3: number,
+    depth: number
+  ): LandingInterface {
     return new Landing([
-      {start: p0, end: p1, height: depth},
-      {start: p1, end: p2, height: 0},
-      {start: p2, end: p3, height: depth},
+      { start: p0, end: p1, height: depth },
+      { start: p1, end: p2, height: 0 },
+      { start: p2, end: p3, height: depth },
     ]);
   }
 }

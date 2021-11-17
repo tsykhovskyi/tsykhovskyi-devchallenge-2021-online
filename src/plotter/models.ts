@@ -1,26 +1,31 @@
 export interface StartCommand {
-  command: 'START';
+  command: "START";
 }
 
 export interface GoToCommand {
-  command: 'GOTO';
+  command: "GOTO";
   x: number;
   y: number;
 }
 
 export interface DownCommand {
-  command: 'DOWN';
+  command: "DOWN";
 }
 
 export interface UpCommand {
-  command: 'UP';
+  command: "UP";
 }
 
 export interface StopCommand {
-  command: 'STOP';
+  command: "STOP";
 }
 
-export type Command = StartCommand | GoToCommand | DownCommand | UpCommand | StopCommand;
+export type Command =
+  | StartCommand
+  | GoToCommand
+  | DownCommand
+  | UpCommand
+  | StopCommand;
 
 export interface Coordinates {
   x: number;

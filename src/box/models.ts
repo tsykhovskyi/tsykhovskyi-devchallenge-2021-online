@@ -1,8 +1,6 @@
-import { CrossFigure } from './cross-figure';
-
 export interface SheetSize {
   width: number;
-  length: number
+  length: number;
 }
 
 export interface BoxSize {
@@ -12,10 +10,10 @@ export interface BoxSize {
 }
 
 export enum Direction {
-  Up = 'Up',
-  Down = 'Down',
-  Left = 'Left',
-  Right = 'Right'
+  Up = "Up",
+  Down = "Down",
+  Left = "Left",
+  Right = "Right",
 }
 
 export interface Point {
@@ -28,7 +26,7 @@ export interface Line {
   to: Point;
 }
 
-export type Axis = 'x' | 'y';
+export type Axis = "x" | "y";
 
 export interface FigureInterface {
   readonly direction: Direction;
@@ -62,7 +60,7 @@ export interface LandingInterface {
   /**
    * Calculates square under provided interval
    */
-  intervalSquare(start: number, end: number): number
+  intervalSquare(start: number, end: number): number;
 
   /**
    * Extract landing for defined start and end.
@@ -88,7 +86,7 @@ export interface LandingInterface {
 }
 
 export interface FieldInterface {
-  bestFigureMatch(figures: FigureInterface[]): FigurePositionInterface | null
+  bestFigureMatch(figures: FigureInterface[]): FigurePositionInterface | null;
   applyFigurePosition(figurePosition: FigurePositionInterface): FieldInterface;
 }
 

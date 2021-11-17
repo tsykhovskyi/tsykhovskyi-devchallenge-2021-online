@@ -1,6 +1,6 @@
-import { FigurePositionInterface } from '../box/models';
-import { Command } from './models';
-import { Plotter } from './plotter';
+import { FigurePositionInterface } from "../box/models";
+import { Command } from "./models";
+import { Plotter } from "./plotter";
 
 export class Renderer {
   private plotter: Plotter;
@@ -8,7 +8,6 @@ export class Renderer {
   constructor() {
     this.plotter = new Plotter();
   }
-
 
   render(figurePositions: FigurePositionInterface[]): Command[] {
     for (const figurePosition of figurePositions) {
