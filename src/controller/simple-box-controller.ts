@@ -19,8 +19,11 @@ export class SimpleBoxController {
       return errorResponse(res, err as Error)
     }
 
-    const result = (new Renderer()).fillBoxes(request.boxSize, request.sheetSize);
+    const boxes = (new Renderer()).fillBoxes(request.boxSize, request.sheetSize);
+    if (boxes.length === 0) {
+      errorResponse(res, new Error('Invalid sheet size. Too small for producing at least one box'));
+    }
 
-    successResponse(res, result);
+    successResponse(res, boxes);
   }
 }

@@ -7,7 +7,6 @@ import {
   LandingInterface,
   SheetSize
 } from './models';
-import { Landing } from './landing';
 import { CrossFigure } from './cross-figure';
 import { Field } from './field';
 
