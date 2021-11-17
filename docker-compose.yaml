@@ -4,5 +4,6 @@ services:
   app:
     build: .
     working_dir: /application
+    container_name: app
     ports:
       - "8080:8080"
