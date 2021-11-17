@@ -24,6 +24,18 @@ export class Landing implements LandingInterface {
     return this.intervals[this.intervals.length - 1].end;
   }
 
+  get lowestHeight(): number {
+    let height = this.intervals[0].height;
+    for (const interval of this.intervals) {
+      height = Math.min(height, interval.height);
+      if (height === 0) {
+        return 0;
+      }
+    }
+
+    return height;
+  }
+
   get square(): number {
     return this.intervals.reduce((square, interval) => square + (interval.end - interval.start) * interval.height, 0);
   }
@@ -135,22 +147,28 @@ export class Landing implements LandingInterface {
     const resultPoints: Point[] = [];
     const uniqueBlockPositions = new Set<number>();
 
-    for (const interval of this.intervals) {
-      const blockLandings = figure.bottomShapeLandingOptions()
-      for (let blockLanding of blockLandings) {
+    const lowestHeight = this.lowestHeight;
+
+    const lowestInterval = this.intervals.find(interval => interval.height === lowestHeight);
+    if (lowestInterval === undefined) {
+      throw new Error('Runtime error');
+    }
+
+    const blockRelatedLandings = figure.bottomShapeLandingOptions()
+    for (let blockRelatedLanding of blockRelatedLandings) {
+      for (const blockLanding of [
+        blockRelatedLanding.shift(lowestInterval.start, 0),
+        blockRelatedLanding.shift(lowestInterval.end, 0),
+      ]) {
+        // Do not duplicate same position
         if (uniqueBlockPositions.has(blockLanding.start)) {
           continue;
         }
-
-        // Move landing to interval start
-        blockLanding = blockLanding.shift(interval.start, 0);
         // Validate constraints
         if (blockLanding.start < this.start || blockLanding.end > this.end) {
           continue;
         }
         const height = this.fitHeight(blockLanding);
-        // Move landing to its defined position
-
         resultPoints.push({x: blockLanding.start, y: height});
         uniqueBlockPositions.add(blockLanding.start);
       }

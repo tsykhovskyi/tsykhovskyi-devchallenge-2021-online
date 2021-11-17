@@ -4,9 +4,7 @@ import { SimpleBoxController } from './controller/simple-box-controller';
 const app = express();
 app.use(express.json());
 
-const simpleBoxController = new SimpleBoxController();
-
-app.post('/api/simple_box', simpleBoxController.index.bind(simpleBoxController));
+app.post('/api/simple_box', (req, res) => (new SimpleBoxController()).index(req, res));
 
 app.listen(8080, () =>
   console.log("application was started on http://localhost:8080")

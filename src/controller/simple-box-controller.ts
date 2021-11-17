@@ -32,6 +32,6 @@ export class SimpleBoxController {
 
     const commands = this.renderer.render(boxes);
 
-    successResponse(res, boxes.length, commands);
+    successResponse(res, boxes.length, commands, boxes);
   }
 }

@@ -56,6 +56,7 @@ export interface LandingInterface {
   intervals: ReadonlyArray<LandingInterval>;
   start: number;
   end: number;
+  lowestHeight: number;
   square: number;
 
   /**

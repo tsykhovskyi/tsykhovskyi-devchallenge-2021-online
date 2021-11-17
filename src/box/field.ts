@@ -63,7 +63,7 @@ export class Field implements FieldInterface {
     return new Field(xLanding, yLanding);
   }
 
-  private xPositionFieldSquare(figurePosition: FigurePositionInterface): number {return 0;
+  private xPositionFieldSquare(figurePosition: FigurePositionInterface): number {
     const xFigureSquare = figurePosition.topShapeLanding().square;
     const xLandingSquare = this.xLanding.intervalSquare(figurePosition.offsetPoint.x, figurePosition.offsetPoint.x + figurePosition.figure.width);
     const yPosition = figurePosition.switchProjection();
