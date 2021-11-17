@@ -7,33 +7,50 @@ export class FieldFigureDistributor {
   fillBoxes(boxSize: BoxSize, sheetSize: SheetSize): FigurePositionInterface[] {
     boxSize = this.adjustBoxSizes(boxSize);
 
-    const result: FigurePositionInterface[] = [];
-    const figures = this.createFigures(boxSize);
+    let bestFigurePositions: FigurePositionInterface[] = [];
 
-    let field = Field.createEmpty(sheetSize.width, sheetSize.length);
+    for (const figures of this.createFigureSets(boxSize, sheetSize)) {
+      const figurePositions: FigurePositionInterface[] = [];
+      let field = Field.createEmpty(sheetSize.width, sheetSize.length);
 
-    while (true) {
-      const bestPosition = field.bestFigureMatch(figures);
+      while (true) {
+        const bestPosition = field.bestFigureMatch(figures);
+        if (bestPosition === null) {
+          break;
+        } else {
+          figurePositions.push(bestPosition);
+        }
 
-      if (bestPosition === null) {
-        break;
-      } else {
-        result.push(bestPosition);
+        field = field.applyFigurePosition(bestPosition);
       }
 
-      field = field.applyFigurePosition(bestPosition);
+      if (figurePositions.length > bestFigurePositions.length) {
+        bestFigurePositions = figurePositions;
+      }
     }
 
-    return result;
+    return bestFigurePositions;
   }
 
-  private createFigures(boxSize: BoxSize): FigureInterface[] {
-    return [
+  /**
+   * Creates 2 figures sets with vertical order
+   */
+  private createFigureSets(boxSize: BoxSize, sheetSize: SheetSize): FigureInterface[][] {
+    const horizontalPrioritySet = [
       new CrossFigure(Direction.Left, boxSize),
       new CrossFigure(Direction.Down, boxSize),
       new CrossFigure(Direction.Right, boxSize),
       new CrossFigure(Direction.Up, boxSize),
     ];
+
+    const verticalPrioritySet = [
+      new CrossFigure(Direction.Down, boxSize),
+      new CrossFigure(Direction.Left, boxSize),
+      new CrossFigure(Direction.Up, boxSize),
+      new CrossFigure(Direction.Right, boxSize),
+    ];
+
+    return [horizontalPrioritySet, verticalPrioritySet];
   }
 
   /**
