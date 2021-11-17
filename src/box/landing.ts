@@ -9,6 +9,9 @@ import { FigurePosition } from './figure-position';
 
 export class Landing implements LandingInterface {
   constructor(public intervals: ReadonlyArray<LandingInterval>) {
+    if (intervals.length === 0) {
+      throw new Error('Intervals should not be empty');
+    }
   }
 
   static create(width: number) {
@@ -80,10 +83,21 @@ export class Landing implements LandingInterface {
     const patchIntervals = [...patchLanding.intervals];
     // Create new intervals slice
     if (patchLanding.start !== this.intervals[replaceStart].start) {
-      patchIntervals.unshift({...this.intervals[replaceStart], end: patchLanding.start});
+      if (this.intervals[replaceStart].height === patchIntervals[0].height) {
+        patchIntervals[0] = {...patchIntervals[0], start: this.intervals[replaceStart].start};
+      } else {
+        patchIntervals.unshift({...this.intervals[replaceStart], end: patchLanding.start});
+      }
     }
     if (patchLanding.end !== this.intervals[replaceEnd].end) {
-      patchIntervals.push({...this.intervals[replaceEnd], start: patchLanding.end});
+      if (this.intervals[replaceEnd].height === patchIntervals[patchIntervals.length - 1].height) {
+        patchIntervals[patchIntervals.length - 1] = {
+          ...patchIntervals[patchIntervals.length - 1],
+          end: this.intervals[replaceEnd].end
+        };
+      } else {
+        patchIntervals.push({...this.intervals[replaceEnd], start: patchLanding.end});
+      }
     }
 
     const newIntervals = [...this.intervals]
