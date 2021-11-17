@@ -1,4 +1,5 @@
 import { Landing } from "./landing";
+import { FigureInterface } from "./models";
 
 describe("Landing", () => {
   describe("Initial properties", function () {
@@ -50,6 +51,67 @@ describe("Landing", () => {
         { start: 200, end: 300, height: 30 },
         { start: 300, end: 400, height: 40 },
       ]);
+    });
+
+    it("should calculate interval square", function () {
+      expect(landing.intervalSquare(0, 100)).toEqual(1000);
+      expect(landing.intervalSquare(0, 150)).toEqual(2000);
+      expect(landing.intervalSquare(350, 999)).toEqual(2000);
+
+      expect(landing.intervalSquare(200, 200)).toEqual(0);
+      expect(landing.intervalSquare(201, 201)).toEqual(0);
+      expect(landing.intervalSquare(150, 99)).toEqual(0);
+    });
+
+    it("should shift landing", function () {
+      expect(landing.shift(100, 1).intervals).toEqual([
+        { start: 100, end: 200, height: 11 },
+        { start: 200, end: 300, height: 21 },
+        { start: 300, end: 400, height: 31 },
+        { start: 400, end: 500, height: 41 },
+      ]);
+    });
+  });
+
+  describe("Figures fit", () => {
+    /**
+     *   +++
+     *    +
+     * ==       =
+     * ==    ====
+     * ==== =====
+     * ==========
+     */
+    const landing = new Landing([
+      { start: 0, end: 2, height: 4 },
+      { start: 2, end: 4, height: 2 },
+      { start: 4, end: 5, height: 1 },
+      { start: 5, end: 6, height: 2 },
+      { start: 6, end: 9, height: 3 },
+      { start: 9, end: 10, height: 4 },
+    ]);
+    // T-block factory for position
+    const block = (start: number) =>
+      new Landing([
+        { start: start, end: start + 1, height: 1 },
+        { start: start + 1, end: start + 2, height: 0 },
+        { start: start + 2, end: start + 3, height: 1 },
+      ]);
+
+    it("should fit figure", function () {
+      for (const [position, expectedHeight] of [
+        [0, 4],
+        [1, 3],
+        [2, 2],
+        [3, 1],
+        [4, 2],
+        [5, 3],
+        [6, 3],
+        [7, 3],
+        [8, 4],
+      ]) {
+        expect(landing.fitHeight(block(position))).toEqual(expectedHeight);
+      }
     });
   });
 });
