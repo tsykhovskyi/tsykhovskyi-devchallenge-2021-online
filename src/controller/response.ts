@@ -10,12 +10,11 @@ export function errorResponse(res: Response, err: Error) {
   });
 }
 
-export function successResponse(res: Response, amount: number, program: Command[], boxes: FigurePositionInterface[]) {
+export function successResponse(res: Response, amount: number, program: Command[]) {
   res.statusCode = 200;
   res.send({
     success: true,
     amount,
-    boxes: boxes.map(box => [box.offsetPoint, box.figure.direction]),
     program,
   });
 }
