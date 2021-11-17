@@ -58,15 +58,18 @@ export class Field implements FieldInterface {
     positionsScores.sort(({ square: s1 }, { square: s2 }) => s1 - s2);
 
     const figurePositionScore = positionsScores.shift();
+    if (figurePositionScore === undefined) {
+      return null;
+    }
 
-    return figurePositionScore !== undefined
-      ? figurePositionScore.position
-      : null;
+    const figurePosition = figurePositionScore.position;
+
+    return figurePosition;
   }
 
   applyFigurePosition(figurePosition: FigurePositionInterface): FieldInterface {
-    const xLanding = this.xLanding.overwrite(figurePosition.topShapeLanding());
-    const yLanding = this.yLanding.overwrite(
+    const xLanding = this.xLanding.apply(figurePosition.topShapeLanding());
+    const yLanding = this.yLanding.apply(
       figurePosition.switchProjection().topShapeLanding()
     );
 

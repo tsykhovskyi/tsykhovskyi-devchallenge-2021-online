@@ -15,7 +15,7 @@ export class Landing implements LandingInterface {
   }
 
   static create(width: number) {
-    const intervals = [{ start: 0, end: width, height: 0 }];
+    const intervals = [{start: 0, end: width, height: 0}];
     return new Landing(intervals);
   }
 
@@ -66,70 +66,79 @@ export class Landing implements LandingInterface {
     return square;
   }
 
-  overwrite(patchLanding: LandingInterface): LandingInterface {
-    let replaceStart = null;
-    let replaceEnd = null;
+  apply(patch: LandingInterface): LandingInterface {
+    let i = this.intervals.findIndex(interval => interval.end > patch.start);
+    if (i === -1) {
+      return new Landing([...this.intervals]);
+    }
 
-    // Find start and end intervals source intervals that will be replaces.
-    for (let i = 0; i < this.intervals.length; i++) {
-      const interval = this.intervals[i];
-      if (
-        interval.start <= patchLanding.start &&
-        interval.end > patchLanding.start
-      ) {
-        replaceStart = i;
+    let newIntervals = this.intervals.slice(0, i);
+    let position = this.intervals[i].start;
+    let patchI = 0;
+
+    let bufferIntervals: LandingInterval[] = [];
+    if (patch.intervals[patchI].start > this.intervals[i].start) {
+      bufferIntervals.push({
+        start: this.intervals[i].start,
+        end: patch.intervals[patchI].start,
+        height: this.intervals[i].height
+      });
+      position = patch.intervals[patchI].start;
+    }
+
+    while (true) {
+      // If iterators behind position, increase them
+      if (position >= this.intervals[i].end) {
+        i++;
       }
-      if (
-        interval.start < patchLanding.end &&
-        interval.end >= patchLanding.end
-      ) {
-        replaceEnd = i;
+      if (position >= patch.intervals[patchI].end) {
+        patchI++;
+      }
+      if (i === this.intervals.length || patchI === patch.intervals.length) {
         break;
       }
-    }
 
-    if (replaceStart === null || replaceEnd === null) {
-      throw new Error("Invalid interval calculation");
-    }
+      // Find closest intervals start/end point
+      const nextPosition = [
+        this.intervals[i].start,
+        this.intervals[i].end,
+        patch.intervals[patchI].start,
+        patch.intervals[patchI].end,
+      ].filter(p => p > position).sort((a, b) => a - b).shift();
+      if (nextPosition === undefined) {
+        throw new Error('Logic error');
+      }
 
-    const patchIntervals = [...patchLanding.intervals];
-    // Create new intervals slice
-    if (patchLanding.start !== this.intervals[replaceStart].start) {
-      if (this.intervals[replaceStart].height === patchIntervals[0].height) {
-        patchIntervals[0] = {
-          ...patchIntervals[0],
-          start: this.intervals[replaceStart].start,
+      if (nextPosition > this.end) {
+        break;
+      }
+
+      const height = Math.max(this.intervals[i].height, patch.intervals[patchI].height);
+      if (bufferIntervals.length !== 0 && bufferIntervals[bufferIntervals.length - 1].height === height) {
+        bufferIntervals[bufferIntervals.length - 1] = {
+          ...bufferIntervals[bufferIntervals.length - 1],
+          end: nextPosition
         };
       } else {
-        patchIntervals.unshift({
-          ...this.intervals[replaceStart],
-          end: patchLanding.start,
-        });
+        bufferIntervals.push({start: position, end: nextPosition, height});
       }
-    }
-    if (patchLanding.end !== this.intervals[replaceEnd].end) {
-      if (
-        this.intervals[replaceEnd].height ===
-        patchIntervals[patchIntervals.length - 1].height
-      ) {
-        patchIntervals[patchIntervals.length - 1] = {
-          ...patchIntervals[patchIntervals.length - 1],
-          end: this.intervals[replaceEnd].end,
-        };
-      } else {
-        patchIntervals.push({
-          ...this.intervals[replaceEnd],
-          start: patchLanding.end,
-        });
-      }
+      position = nextPosition;
     }
 
-    const newIntervals = [...this.intervals];
-    newIntervals.splice(
-      replaceStart,
-      replaceEnd - replaceStart + 1,
-      ...patchIntervals
-    );
+    newIntervals.push(...bufferIntervals);
+
+    if (i < this.intervals.length && this.intervals[i].end > position) {
+      if (newIntervals.length !== 0 && newIntervals[newIntervals.length - 1].height === this.intervals[i].height) {
+        newIntervals[newIntervals.length - 1] = {
+          ...newIntervals[newIntervals.length - 1],
+          end: this.intervals[i].end
+        };
+      } else {
+        newIntervals.push({start: position, end: this.intervals[i].end, height: this.intervals[i].height});
+      }
+
+      newIntervals.push(...this.intervals.slice(++i));
+    }
 
     return new Landing(newIntervals);
   }
@@ -177,7 +186,7 @@ export class Landing implements LandingInterface {
       while (
         i < this.intervals.length &&
         this.intervals[i].start < bInterval.end
-      ) {
+        ) {
         if (this.intervals[i].end > bInterval.start) {
           // Adjust result height
           height = Math.max(
@@ -223,7 +232,7 @@ export class Landing implements LandingInterface {
           continue;
         }
         const height = this.fitHeight(blockLanding);
-        resultPoints.push({ x: blockLanding.start, y: height });
+        resultPoints.push({x: blockLanding.start, y: height});
         uniqueBlockPositions.add(blockLanding.start);
       }
     }

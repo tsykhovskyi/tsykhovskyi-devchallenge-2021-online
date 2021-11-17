@@ -68,9 +68,11 @@ export interface LandingInterface {
   slice(start: number, end: number): LandingInterface;
 
   /**
-   * Overwrite existed landing with patchLanding on matched intervals
+   * Update existed landing with patchLanding values only higher value.
+   *
+   * (5, 1, 3, 1) + (-, 2, 2, 2) = (5, 2, 3, 2)
    */
-  overwrite(patchLanding: LandingInterface): LandingInterface;
+  apply(patchLanding: LandingInterface): LandingInterface;
 
   /**
    * Find minimum landing-related height which can fit block path without intersection

@@ -4,10 +4,10 @@ import { FigureInterface } from "./models";
 describe("Landing", () => {
   describe("Initial properties", () => {
     const landing = new Landing([
-      { start: 100, end: 150, height: 20 },
-      { start: 150, end: 200, height: 50 },
-      { start: 200, end: 250, height: 10 },
-      { start: 250, end: 300, height: 5 },
+      {start: 100, end: 150, height: 20},
+      {start: 150, end: 200, height: 50},
+      {start: 200, end: 250, height: 10},
+      {start: 250, end: 300, height: 5},
     ]);
 
     it("should have valid properties", () => {
@@ -20,36 +20,18 @@ describe("Landing", () => {
 
   describe("intervals manipulation", () => {
     const landing = new Landing([
-      { start: 0, end: 100, height: 10 },
-      { start: 100, end: 200, height: 20 },
-      { start: 200, end: 300, height: 30 },
-      { start: 300, end: 400, height: 40 },
+      {start: 0, end: 100, height: 10},
+      {start: 100, end: 200, height: 20},
+      {start: 200, end: 300, height: 30},
+      {start: 300, end: 400, height: 40},
     ]);
 
     it("should create valid slice", () => {
       const slice = landing.slice(50, 150);
 
       expect(slice.intervals).toEqual([
-        { start: 50, end: 100, height: 10 },
-        { start: 100, end: 150, height: 20 },
-      ]);
-    });
-
-    it("should overwrite intervals", () => {
-      const patchLanding = new Landing([
-        { start: 50, end: 150, height: 100 },
-        { start: 150, end: 200, height: 0 },
-        { start: 200, end: 250, height: 30 }, // same height
-      ]);
-
-      const result = landing.overwrite(patchLanding);
-
-      expect(result.intervals).toEqual([
-        { start: 0, end: 50, height: 10 },
-        { start: 50, end: 150, height: 100 },
-        { start: 150, end: 200, height: 0 },
-        { start: 200, end: 300, height: 30 },
-        { start: 300, end: 400, height: 40 },
+        {start: 50, end: 100, height: 10},
+        {start: 100, end: 150, height: 20},
       ]);
     });
 
@@ -65,13 +47,94 @@ describe("Landing", () => {
 
     it("should shift landing", () => {
       expect(landing.shift(100, 1).intervals).toEqual([
-        { start: 100, end: 200, height: 11 },
-        { start: 200, end: 300, height: 21 },
-        { start: 300, end: 400, height: 31 },
-        { start: 400, end: 500, height: 41 },
+        {start: 100, end: 200, height: 11},
+        {start: 200, end: 300, height: 21},
+        {start: 300, end: 400, height: 31},
+        {start: 400, end: 500, height: 41},
       ]);
     });
   });
+
+  describe('Interval patch apply', () => {
+    it("should apply interval patch", () => {
+      const landing = new Landing([
+        {start: 0, end: 100, height: 10},
+        {start: 100, end: 200, height: 20},
+        {start: 200, end: 300, height: 30},
+        {start: 300, end: 400, height: 40},
+      ]);
+
+      const patchLanding = new Landing([
+        {start: 50, end: 150, height: 100},
+        {start: 150, end: 200, height: 0},
+        {start: 200, end: 250, height: 30}, // same height
+      ]);
+
+      const result = landing.apply(patchLanding);
+      expect(result.intervals).toEqual([
+        {start: 0, end: 50, height: 10},
+        {start: 50, end: 150, height: 100},
+        {start: 150, end: 200, height: 20},
+        {start: 200, end: 300, height: 30},
+        {start: 300, end: 400, height: 40},
+      ]);
+    });
+
+    it('should work wwith out of range patch', function () {
+      const landing = new Landing([
+        {start: 100, end: 200, height: 0},
+        {start: 200, end: 300, height: 100},
+        {start: 300, end: 400, height: 0},
+      ]);
+      const patchLanding = new Landing([
+        {start: 0, end: 500, height: 50}
+      ]);
+
+      const result = landing.apply(patchLanding);
+      expect(result.intervals).toEqual([
+        {start: 100, end: 200, height: 50},
+        {start: 200, end: 300, height: 100},
+        {start: 300, end: 400, height: 50},
+      ]);
+    });
+
+    it('should compensate each other', function () {
+      const landing = new Landing([
+        {start: 0, end: 100, height: 100},
+        {start: 100, end: 200, height: 0},
+        {start: 200, end: 300, height: 100},
+        {start: 300, end: 400, height: 0},
+      ]);
+      const patchLanding = new Landing([
+        {start: 0, end: 100, height: 0},
+        {start: 100, end: 200, height: 100},
+        {start: 200, end: 300, height: 0},
+        {start: 300, end: 400, height: 100},
+      ]);
+
+      const result = landing.apply(patchLanding);
+      expect(result.intervals).toEqual([
+        {start: 0, end: 400, height: 100}
+      ]);
+    });
+
+    it('should patch empty landing', function () {
+      const landing = Landing.create(10);
+      const patchLanding = new Landing([
+        {start: 0, end: 1, height: 2},
+        {start: 1, end: 2, height: 3},
+        {start: 2, end: 4, height: 2},
+      ]);
+
+      const result = landing.apply(patchLanding);
+      expect(result.intervals).toEqual([
+        {start: 0, end: 1, height: 2},
+        {start: 1, end: 2, height: 3},
+        {start: 2, end: 4, height: 2},
+        {start: 4, end: 10, height: 0},
+      ]);
+    });
+  })
 
   describe("Figures fit", () => {
     /**
@@ -83,19 +146,19 @@ describe("Landing", () => {
      * ==========
      */
     const landing = new Landing([
-      { start: 0, end: 2, height: 4 },
-      { start: 2, end: 4, height: 2 },
-      { start: 4, end: 5, height: 1 },
-      { start: 5, end: 6, height: 2 },
-      { start: 6, end: 9, height: 3 },
-      { start: 9, end: 10, height: 4 },
+      {start: 0, end: 2, height: 4},
+      {start: 2, end: 4, height: 2},
+      {start: 4, end: 5, height: 1},
+      {start: 5, end: 6, height: 2},
+      {start: 6, end: 9, height: 3},
+      {start: 9, end: 10, height: 4},
     ]);
     // T-block factory for position
     const block = (start: number) =>
       new Landing([
-        { start: start, end: start + 1, height: 1 },
-        { start: start + 1, end: start + 2, height: 0 },
-        { start: start + 2, end: start + 3, height: 1 },
+        {start: start, end: start + 1, height: 1},
+        {start: start + 1, end: start + 2, height: 0},
+        {start: start + 2, end: start + 3, height: 1},
       ]);
 
     it("should fit figure", () => {
